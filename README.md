@@ -56,4 +56,7 @@ Simple UI with questions, options, and score display.
 * 📚 More questions
 
 ---
+## 🎯 Conclusion
+
+This project is a beginner-friendly way to practice **JavaScript concepts like arrays, functions, DOM manipulation, and events**, while building a real-world interactive application.
 
