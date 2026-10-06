@@ -1,62 +1,77 @@
 # 🧠 Simple Quiz App
 
-A simple and interactive **Quiz Application** built using **HTML, Tailwind CSS, and JavaScript**.
-This project allows users to answer multiple-choice questions and view their final score.
-
----
+A simple and interactive **Quiz App** built using **HTML, Tailwind CSS, and JavaScript**.
+It tests basic web development knowledge with multiple-choice questions and displays the final score and percentage.
 
 ## 🚀 Features
 
-* 📋 Multiple-choice questions
-* 🔢 Question progress (e.g., 1/5)
-* ✅ Select and highlight answers
-* ➡️ Next question navigation
-* 🧮 Score calculation
-* 🎉 Final result display
-
----
+* 🧠 Multiple-choice quiz questions
+* 📊 Question progress bar
+* ✅ Shows correct and wrong answers
+* 🔢 Real-time score tracking
+* ⬅️ Previous and ➡️ Next question navigation
+* 🏆 Final score and percentage
+* 💬 Result message based on performance
+* 🔄 Restart Quiz option
+* 📱 Responsive design
 
 ## 🛠️ Technologies Used
 
-* **HTML** – Structure
-* **Tailwind CSS** – Styling
-* **JavaScript** – Logic & Interactivity
-
----
+* HTML5
+* Tailwind CSS
+* JavaScript
+* DOM Manipulation
 
 ## 📂 Project Structure
 
+```text
+Simple-Quiz-App/
+│
+└── index.html
 ```
-quiz-app/
-│── index.html
-```
-
----
 
 ## ▶️ How to Run
 
-1. Download or clone this repository
-2. Open `index.html` in your browser
-3. Start answering the quiz
+1. Download or clone this repository.
+2. Open the project folder.
+3. Open `index.html` in your browser.
+4. Start answering the quiz questions.
 
----
+## 🎯 Quiz Topics
 
-## 📸 Preview
+The quiz includes basic questions related to:
 
-Simple UI with questions, options, and score display.
+* HTML
+* CSS
+* JavaScript
+* React
+* LocalStorage
+* Web Development
 
----
+## 📸 Features Preview
+
+The application includes:
+
+* Dark-themed quiz interface
+* Progress indicator
+* Interactive answer buttons
+* Instant feedback
+* Final result screen
 
 ## 📌 Future Improvements
 
-* 🔄 Restart Quiz button
-* ⏱️ Timer for each question
-* 💾 Save high score using LocalStorage
-* 🎨 Better UI & animations
-* 📚 More questions
+* Add more questions
+* Add different difficulty levels
+* Add timer functionality
+* Add category-based quizzes
+* Store high scores using LocalStorage
 
----
-## 🎯 Conclusion
+## 👩‍💻 Author
 
-This project is a beginner-friendly way to practice **JavaScript concepts like arrays, functions, DOM manipulation, and events**, while building a real-world interactive application.
+**Lakshmi**
 
+Aspiring Full Stack Developer
+
+## 📄 License
+
+This project is created for **learning and educational purposes**.
