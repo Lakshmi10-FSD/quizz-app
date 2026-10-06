@@ -66,4 +66,8 @@ The application includes:
 * Add category-based quizzes
 * Store high scores using LocalStorage
 
+## Conclusion
+
+This Simple Quiz App is a beginner-friendly web project that demonstrates **HTML, Tailwind CSS, and JavaScript** concepts. It provides an interactive way to test web development knowledge while practicing **DOM manipulation, event handling, and JavaScript logic**.
+
 
