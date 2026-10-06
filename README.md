@@ -66,12 +66,4 @@ The application includes:
 * Add category-based quizzes
 * Store high scores using LocalStorage
 
-## 👩‍💻 Author
 
-**Lakshmi**
-
-Aspiring Full Stack Developer
-
-## 📄 License
-
-This project is created for **learning and educational purposes**.
