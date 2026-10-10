@@ -3,577 +3,332 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Simple Quiz App</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-900 min-h-screen flex items-center justify-center text-white p-4">
+  <main class="bg-gray-800 p-6 rounded-2xl w-full max-w-md shadow-2xl">
+    <h1 class="text-3xl font-bold text-center mb-2">🧠 Quiz App</h1>
+    <p id="subtitle" class="text-gray-400 text-center mb-6">Choose a category and test your knowledge</p>
 
-  <div class="bg-gray-800 p-6 rounded-2xl w-full max-w-md shadow-2xl">
-
-    <!-- Heading -->
-    <h1 class="text-3xl font-bold text-center mb-2">
-      🧠 Quiz App
-    </h1>
-
-    <p class="text-gray-400 text-center mb-6">
-      Test your web development knowledge
-    </p>
+    <!-- Category Selection -->
+    <section id="categoryBox" class="space-y-3">
+      <h2 class="text-xl font-bold text-center mb-4">Choose a Quiz Category</h2>
+      <button onclick="startQuiz('web')" class="w-full bg-blue-600 hover:bg-blue-700 p-4 rounded-lg transition">🌐 Web Development</button>
+      <button onclick="startQuiz('python')" class="w-full bg-green-600 hover:bg-green-700 p-4 rounded-lg transition">🐍 Python</button>
+      <button onclick="startQuiz('javascript')" class="w-full bg-yellow-600 hover:bg-yellow-700 p-4 rounded-lg transition text-gray-900">💛 JavaScript</button>
+    </section>
 
     <!-- Quiz Section -->
-    <div id="quizBox">
-
-      <!-- Progress Text -->
+    <section id="quizBox" class="hidden">
       <div class="flex justify-between text-sm text-gray-300 mb-2">
         <p id="progress"></p>
         <p id="scoreTop">Score: 0</p>
       </div>
 
-      <!-- Progress Bar -->
       <div class="w-full bg-gray-700 rounded-full h-2 mb-6">
-        <div
-          id="progressBar"
-          class="bg-blue-500 h-2 rounded-full transition-all duration-300"
-          style="width: 0%">
-        </div>
+        <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
       </div>
 
-      <!-- Question -->
-      <h2
-        id="question"
-        class="text-xl font-semibold mb-5">
-      </h2>
+      <h2 id="question" class="text-xl font-semibold mb-5"></h2>
+      <div id="options" class="space-y-3"></div>
+      <p id="feedback" class="text-center font-semibold mt-4 min-h-[24px]"></p>
 
-      <!-- Options -->
-      <div
-        id="options"
-        class="space-y-3">
+      <div class="flex justify-between mt-6 gap-3">
+        <button id="previousBtn" onclick="previousQuestion()" class="bg-gray-600 px-4 py-2 rounded-lg hover:bg-gray-500 transition disabled:opacity-40 disabled:cursor-not-allowed">← Previous</button>
+        <button id="nextBtn" onclick="nextQuestion()" class="bg-blue-500 px-5 py-2 rounded-lg hover:bg-blue-600 transition">Next →</button>
       </div>
-
-      <!-- Feedback -->
-      <p
-        id="feedback"
-        class="text-center font-semibold mt-4 min-h-[24px]">
-      </p>
-
-      <!-- Buttons -->
-      <div class="flex justify-between mt-6">
-
-        <button
-          id="previousBtn"
-          onclick="previousQuestion()"
-          class="bg-gray-600 px-5 py-2 rounded-lg hover:bg-gray-500 transition disabled:opacity-40 disabled:cursor-not-allowed">
-          ← Previous
-        </button>
-
-        <button
-          id="nextBtn"
-          onclick="nextQuestion()"
-          class="bg-blue-500 px-5 py-2 rounded-lg hover:bg-blue-600 transition">
-          Next →
-        </button>
-
-      </div>
-
-    </div>
+      <button onclick="backToCategories()" class="w-full text-sm text-gray-400 hover:text-white mt-4">← Back to categories</button>
+    </section>
 
     <!-- Result Section -->
-    <div
-      id="resultBox"
-      class="hidden text-center">
-
-      <div class="text-6xl mb-4">
-        🎉
-      </div>
-
-      <h2 class="text-2xl font-bold mb-3">
-        Quiz Completed!
-      </h2>
-
-      <p
-        id="finalScore"
-        class="text-xl text-green-400 font-semibold mb-2">
-      </p>
-
-      <p
-        id="percentage"
-        class="text-gray-300 mb-2">
-      </p>
-
-      <p
-        id="resultMessage"
-        class="text-lg mb-6">
-      </p>
-
-      <button
-        onclick="restartQuiz()"
-        class="bg-green-500 px-6 py-3 rounded-lg hover:bg-green-600 transition">
-        🔄 Restart Quiz
-      </button>
-
-    </div>
-
-  </div>
+    <section id="resultBox" class="hidden text-center">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-2xl font-bold mb-3">Quiz Completed!</h2>
+      <p id="finalCategory" class="text-blue-300 mb-2"></p>
+      <p id="finalScore" class="text-xl text-green-400 font-semibold mb-2"></p>
+      <p id="percentage" class="text-gray-300 mb-2"></p>
+      <p id="resultMessage" class="text-lg mb-6"></p>
+      <button onclick="restartQuiz()" class="bg-green-500 px-6 py-3 rounded-lg hover:bg-green-600 transition">🔄 Choose Another Quiz</button>
+    </section>
+  </main>
 
 <script>
-
-const quiz = [
-
-  {
-    question: "What does HTML stand for?",
-    options: [
-      "Hyper Text Markup Language",
-      "High Text Machine Language",
-      "Hyper Tool Markup Language",
-      "Home Text Markup Language"
-    ],
-    answer: 0
+const quizzes = {
+  web: {
+    title: "Web Development",
+    questions: [
+      {
+        question: "What does HTML stand for?",
+        options: ["Hyper Text Markup Language", "High Text Machine Language", "Hyper Tool Markup Language", "Home Text Markup Language"],
+        answer: 0
+      },
+      {
+        question: "Which language is mainly used for styling web pages?",
+        options: ["HTML", "Python", "CSS", "Java"],
+        answer: 2
+      },
+      {
+        question: "Which is a JavaScript library?",
+        options: ["Django", "React", "Flask", "Laravel"],
+        answer: 1
+      },
+      {
+        question: "Which HTML tag is used for a paragraph?",
+        options: ["<p>", "<h1>", "<div>", "<span>"],
+        answer: 0
+      },
+      {
+        question: "Which is used to store data in the browser?",
+        options: ["Compiler", "LocalStorage", "Database Server", "Python"],
+        answer: 1
+      },
+      {
+        question: "Which keyword can declare a variable in JavaScript?",
+        options: ["var", "int", "string", "define"],
+        answer: 0
+      },
+      {
+        question: "Which symbol is used for an ID selector in CSS?",
+        options: [".", "#", "*", "@"],
+        answer: 1
+      },
+      {
+        question: "Which HTML tag creates a hyperlink?",
+        options: ["<img>", "<link>", "<a>", "<href>"],
+        answer: 2
+      },
+      {
+        question: "Which JavaScript method writes a message to the browser console?",
+        options: ["print()", "console.log()", "write()", "message()"],
+        answer: 1
+      },
+      {
+        question: "Which CSS property changes text color?",
+        options: ["font-color", "text-color", "background-color", "color"],
+        answer: 3
+      }
+    ]
   },
-
-  {
-    question: "Which language is mainly used for styling web pages?",
-    options: [
-      "HTML",
-      "Python",
-      "CSS",
-      "Java"
-    ],
-    answer: 2
+  python: {
+    title: "Python",
+    questions: [
+      {
+        question: "Which keyword defines a function in Python?",
+        options: ["func", "def", "function", "define"],
+        answer: 1
+      },
+      {
+        question: "Which data type stores True or False?",
+        options: ["int", "str", "bool", "list"],
+        answer: 2
+      },
+      {
+        question: "Which symbol starts a single-line comment in Python?",
+        options: ["//", "#", "/*", "--"],
+        answer: 1
+      },
+      {
+        question: "Which collection stores items in an ordered, changeable sequence?",
+        options: ["tuple", "set", "list", "bool"],
+        answer: 2
+      },
+      {
+        question: "What is the output of print(2 + 3)?",
+        options: ["23", "5", "2 + 3", "Error"],
+        answer: 1
+      }
+    ]
   },
-
-  {
-    question: "Which is a JavaScript library?",
-    options: [
-      "Django",
-      "React",
-      "Flask",
-      "Laravel"
-    ],
-    answer: 1
-  },
-
-  {
-    question: "Which HTML tag is used for a paragraph?",
-    options: [
-      "<p>",
-      "<h1>",
-      "<div>",
-      "<span>"
-    ],
-    answer: 0
-  },
-
-  {
-    question: "Which is used to store data in the browser?",
-    options: [
-      "Compiler",
-      "LocalStorage",
-      "Database Server",
-      "Python"
-    ],
-    answer: 1
-  },
-
-  {
-    question: "Which keyword is used to declare a variable in JavaScript?",
-    options: [
-      "var",
-      "int",
-      "string",
-      "define"
-    ],
-    answer: 0
-  },
-
-  {
-    question: "Which symbol is used for an ID selector in CSS?",
-    options: [
-      ".",
-      "#",
-      "*",
-      "@"
-    ],
-    answer: 1
-  },
-
-  {
-    question: "Which HTML tag is used to create a link?",
-    options: [
-      "<img>",
-      "<link>",
-      "<a>",
-      "<href>"
-    ],
-    answer: 2
-  },
-
-  {
-    question: "Which JavaScript method displays a message in the browser console?",
-    options: [
-      "print()",
-      "console.log()",
-      "write()",
-      "message()"
-    ],
-    answer: 1
-  },
-
-  {
-    question: "Which property changes the text color in CSS?",
-    options: [
-      "font-color",
-      "text-color",
-      "background-color",
-      "color"
-    ],
-    answer: 3
+  javascript: {
+    title: "JavaScript",
+    questions: [
+      {
+        question: "Which keyword declares a block-scoped variable?",
+        options: ["var", "let", "int", "define"],
+        answer: 1
+      },
+      {
+        question: "Which method displays a message in the browser console?",
+        options: ["print()", "alert()", "console.log()", "display()"],
+        answer: 2
+      },
+      {
+        question: "Which operator checks both value and type equality?",
+        options: ["=", "==", "===", "!="],
+        answer: 2
+      },
+      {
+        question: "Which array method creates a new array by transforming each item?",
+        options: ["map()", "find()", "push()", "pop()"],
+        answer: 0
+      },
+      {
+        question: "Which value represents an intentional absence of a value?",
+        options: ["true", "0", "null", "NaN"],
+        answer: 2
+      }
+    ]
   }
+};
 
-];
-
-
+let activeCategory = "";
+let quiz = [];
 let current = 0;
-
 let score = 0;
+let selectedAnswers = [];
 
-let selectedAnswers = new Array(quiz.length).fill(null);
+function startQuiz(category) {
+  activeCategory = category;
+  quiz = quizzes[category].questions;
+  current = 0;
+  score = 0;
+  selectedAnswers = new Array(quiz.length).fill(null);
 
-
-// Load Question
-
-function loadQuestion() {
-
-  const currentQuestion = quiz[current];
-
-  document.getElementById("progress").innerText =
-    `Question ${current + 1} of ${quiz.length}`;
-
-  document.getElementById("scoreTop").innerText =
-    `Score: ${score}`;
-
-  document.getElementById("question").innerText =
-    currentQuestion.question;
-
-
-  // Progress Bar
-
-  let progressPercentage =
-    ((current + 1) / quiz.length) * 100;
-
-  document.getElementById("progressBar").style.width =
-    progressPercentage + "%";
-
-
-  let optionsHTML = "";
-
-  currentQuestion.options.forEach((option, index) => {
-
-    optionsHTML += `
-
-      <button
-
-        onclick="selectOption(${index})"
-
-        id="option-${index}"
-
-        class="option w-full bg-gray-700 p-3 rounded-lg
-        hover:bg-gray-600 transition text-left">
-
-        ${String.fromCharCode(65 + index)}. ${option}
-
-      </button>
-
-    `;
-
-  });
-
-
-  document.getElementById("options").innerHTML =
-    optionsHTML;
-
-
-  document.getElementById("feedback").innerText = "";
-
-
-  // Previous button
-
-  document.getElementById("previousBtn").disabled =
-    current === 0;
-
-
-  // Change Next → Finish
-
-  if (current === quiz.length - 1) {
-
-    document.getElementById("nextBtn").innerText =
-      "Finish ✓";
-
-  } else {
-
-    document.getElementById("nextBtn").innerText =
-      "Next →";
-
-  }
-
-
-  // Restore selected answer
-
-  if (selectedAnswers[current] !== null) {
-
-    showSelectedAnswer(selectedAnswers[current]);
-
-  }
-
+  document.getElementById("categoryBox").classList.add("hidden");
+  document.getElementById("resultBox").classList.add("hidden");
+  document.getElementById("quizBox").classList.remove("hidden");
+  document.getElementById("subtitle").textContent = quizzes[category].title + " Quiz";
+  loadQuestion();
 }
 
+function loadQuestion() {
+  const currentQuestion = quiz[current];
 
+  document.getElementById("progress").textContent = `Question ${current + 1} of ${quiz.length}`;
+  document.getElementById("scoreTop").textContent = `Score: ${score}`;
+  document.getElementById("question").textContent = currentQuestion.question;
+  document.getElementById("progressBar").style.width = `${((current + 1) / quiz.length) * 100}%`;
 
-// Select Option
+  const optionsHTML = currentQuestion.options.map((option, index) => `
+    <button
+      type="button"
+      onclick="selectOption(${index})"
+      class="option w-full bg-gray-700 p-3 rounded-lg hover:bg-gray-600 transition text-left">
+      ${String.fromCharCode(65 + index)}. ${escapeHTML(option)}
+    </button>
+  `).join("");
+
+  document.getElementById("options").innerHTML = optionsHTML;
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("feedback").className = "text-center font-semibold mt-4 min-h-[24px]";
+  document.getElementById("previousBtn").disabled = current === 0;
+  document.getElementById("nextBtn").textContent = current === quiz.length - 1 ? "Finish ✓" : "Next →";
+
+  if (selectedAnswers[current] !== null) {
+    showSelectedAnswer(selectedAnswers[current]);
+  }
+}
+
+function escapeHTML(value) {
+  return value.replaceAll("&", "&amp;")
+              .replaceAll("<", "&lt;")
+              .replaceAll(">", "&gt;")
+              .replaceAll('"', "&quot;")
+              .replaceAll("'", "&#039;");
+}
 
 function selectOption(index) {
+  const previousAnswer = selectedAnswers[current];
 
-  let previousAnswer =
-    selectedAnswers[current];
+  if (previousAnswer === index) return;
 
-
-  // Remove previous score
-
-  if (
-    previousAnswer !== null &&
-    previousAnswer === quiz[current].answer
-  ) {
-
+  if (previousAnswer !== null && previousAnswer === quiz[current].answer) {
     score--;
-
   }
-
-
-  // Save new answer
 
   selectedAnswers[current] = index;
 
-
-  // Add score if correct
-
   if (index === quiz[current].answer) {
-
     score++;
-
   }
 
-
-  document.getElementById("scoreTop").innerText =
-    `Score: ${score}`;
-
-
+  document.getElementById("scoreTop").textContent = `Score: ${score}`;
   showSelectedAnswer(index);
-
 }
-
-
-
-// Show correct / wrong answer
 
 function showSelectedAnswer(index) {
-
-  const buttons =
-    document.querySelectorAll(".option");
+  const buttons = document.querySelectorAll(".option");
 
   buttons.forEach((button, i) => {
-
-    button.classList.remove(
-      "bg-blue-500",
-      "bg-green-500",
-      "bg-red-500"
-    );
-
+    button.classList.remove("bg-blue-500", "bg-green-500", "bg-red-500");
 
     if (i === quiz[current].answer) {
-
       button.classList.add("bg-green-500");
-
-    }
-
-
-    else if (i === index) {
-
+    } else if (i === index) {
       button.classList.add("bg-red-500");
-
     }
-
   });
 
-
+  const feedback = document.getElementById("feedback");
   if (index === quiz[current].answer) {
-
-    document.getElementById("feedback").innerText =
-      "✅ Correct Answer!";
-
-    document.getElementById("feedback").className =
-      "text-center font-semibold mt-4 min-h-[24px] text-green-400";
-
+    feedback.textContent = "✅ Correct Answer!";
+    feedback.className = "text-center font-semibold mt-4 min-h-[24px] text-green-400";
+  } else {
+    feedback.textContent = "❌ Wrong Answer!";
+    feedback.className = "text-center font-semibold mt-4 min-h-[24px] text-red-400";
   }
-
-  else {
-
-    document.getElementById("feedback").innerText =
-      "❌ Wrong Answer!";
-
-    document.getElementById("feedback").className =
-      "text-center font-semibold mt-4 min-h-[24px] text-red-400";
-
-  }
-
 }
-
-
-
-// Next Question
 
 function nextQuestion() {
-
   if (selectedAnswers[current] === null) {
-
     alert("Please select an option!");
-
     return;
-
   }
 
-
-  current++;
-
-
-  if (current < quiz.length) {
-
+  if (current < quiz.length - 1) {
+    current++;
     loadQuestion();
-
-  }
-
-  else {
-
+  } else {
     showResult();
-
   }
-
 }
-
-
-
-// Previous Question
 
 function previousQuestion() {
-
   if (current > 0) {
-
     current--;
-
     loadQuestion();
-
   }
-
 }
-
-
-
-// Show Result
 
 function showResult() {
+  document.getElementById("quizBox").classList.add("hidden");
+  document.getElementById("resultBox").classList.remove("hidden");
 
-  document.getElementById("quizBox")
-    .classList.add("hidden");
-
-
-  document.getElementById("resultBox")
-    .classList.remove("hidden");
-
-
-  let percent =
-    Math.round((score / quiz.length) * 100);
-
-
-  document.getElementById("finalScore").innerText =
-    `Your Score: ${score} / ${quiz.length}`;
-
-
-  document.getElementById("percentage").innerText =
-    `Percentage: ${percent}%`;
-
+  const percent = Math.round((score / quiz.length) * 100);
+  document.getElementById("finalCategory").textContent = quizzes[activeCategory].title;
+  document.getElementById("finalScore").textContent = `Your Score: ${score} / ${quiz.length}`;
+  document.getElementById("percentage").textContent = `Percentage: ${percent}%`;
 
   let message;
-
-
   if (percent === 100) {
-
     message = "🏆 Excellent! Perfect Score!";
-
-  }
-
-  else if (percent >= 80) {
-
+  } else if (percent >= 80) {
     message = "🌟 Great Job!";
-
-  }
-
-  else if (percent >= 60) {
-
+  } else if (percent >= 60) {
     message = "👍 Good Work!";
-
-  }
-
-  else if (percent >= 40) {
-
+  } else if (percent >= 40) {
     message = "🙂 Nice Try! Keep Practicing.";
-
-  }
-
-  else {
-
+  } else {
     message = "📚 Keep Learning. You can do better!";
-
   }
 
-
-  document.getElementById("resultMessage").innerText =
-    message;
-
+  document.getElementById("resultMessage").textContent = message;
 }
 
-
-
-// Restart Quiz
+function backToCategories() {
+  document.getElementById("quizBox").classList.add("hidden");
+  document.getElementById("resultBox").classList.add("hidden");
+  document.getElementById("categoryBox").classList.remove("hidden");
+  document.getElementById("subtitle").textContent = "Choose a category and test your knowledge";
+}
 
 function restartQuiz() {
-
-  current = 0;
-
-  score = 0;
-
-  selectedAnswers =
-    new Array(quiz.length).fill(null);
-
-
-  document.getElementById("quizBox")
-    .classList.remove("hidden");
-
-
-  document.getElementById("resultBox")
-    .classList.add("hidden");
-
-
-  loadQuestion();
-
+  backToCategories();
 }
 
-
-// Start Quiz
-
-loadQuestion();
-
+// Show categories first; the quiz starts when the user picks one.
 </script>
-
 </body>
 </html>
-
